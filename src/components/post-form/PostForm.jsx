@@ -3,7 +3,8 @@ import { useForm } from "react-hook-form";
 import { Button, Input, RTE, Select } from "../index";
 import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import {login as authLogin} from "../../store/slices";
+import { useSelector,useDispatch } from "react-redux";
 
 export default function PostForm({ post }) {
   const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
@@ -17,6 +18,7 @@ export default function PostForm({ post }) {
 
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const dispatch = useDispatch();
 
   const submit = async (data) => {
     if (post) {
@@ -32,6 +34,8 @@ export default function PostForm({ post }) {
       });
 
       if (dbPost) {
+        const userData=userInfo
+        await dispatch(authLogin(userData)) // ensure store is updated
         navigate(`/post/${dbPost.$id}`);
       }
     } else {
