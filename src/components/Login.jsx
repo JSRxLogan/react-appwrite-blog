@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import authService from '../appwrite/auth'
 import { useForm } from 'react-hook-form'
@@ -7,46 +7,64 @@ import { Button, Input, Logo } from "../components/index"
 import { login as authLogin } from "../store/slices"
 import { Link } from 'react-router-dom'
 
-
 function Login() {
 
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const [error, setError] = useState("");
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const [error, setError] = useState("")
+    const [loadingUser, setLoadingUser] = useState(true) // loading state
     const { register, handleSubmit } = useForm()
 
-    const login = async (data) => {
-
-        setError("");
-        // Reset the error message before attempting to login
-        // This ensures that any previous error message is cleared before a new login attempt.
-        try {
-
-            const session = await authService.login(data)
-
-            if (session) {
+    // Check if a session already exists or if user data is available
+    useEffect(() => {
+        const initUser = async () => {
+            try {
                 const userData = await authService.getCurrentUser()
-
                 if (userData) {
-                    dispatch(authLogin(userData))
-                    navigate("/")
+                    await dispatch(authLogin(userData)) // ensure store is updated
+                    navigate("/") // redirect only after store has user
                 }
+            } catch (err) {
+                // no session found, stay on login page
+            } finally {
+                setLoadingUser(false) // done loading
+            }
+        }
+        initUser()
+    }, [dispatch, navigate])
 
-                else {
-                    setError("Failed to fetch user data. Please try again.")
+    const login = async (data) => {
+        setError("");
+        try {
+            const session = await authService.login(data);
+            if (session) {
+                const userData = await authService.getCurrentUser();
+                if (userData) {
+                    dispatch(authLogin(userData));
+                    setLoadingUser(false); // user info is now available
+
+                    navigate("/"); // now userInfo will exist
+                } else {
+                    setError("Failed to fetch user data. Please try again.");
                 }
             }
-
         } catch (error) {
-            setError("Login failed. Please check your credentials and try again.")
+            setError("Login failed. Please check your credentials and try again.");
         }
+    };
+
+    // Show loader until user info is ready
+    if (loadingUser) {
+        return (
+            <div className='flex items-center justify-center w-full h-screen'>
+                <p className='text-gray-600 text-lg'>Loading session...</p>
+            </div>
+        )
     }
 
     return (
-        <div
-            className='flex items-center justify-center w-full'
-        >
-            <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
+        <div className='flex items-center justify-center w-full'>
+            <div className='mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10'>
                 <div className="mb-2 flex justify-center">
                     <span className="inline-block w-full max-w-[100px]">
                         <Logo width="100%" />
@@ -68,9 +86,7 @@ function Login() {
                     onSubmit={handleSubmit(login)}
                     className='mt-8'
                 >
-
                     <div className='space-y-5'>
-
                         <Input
                             label="Email: "
                             placeHolder="Enter your email"
@@ -96,27 +112,25 @@ function Login() {
                         <Button
                             type="submit"
                             className="
-    w-full 
-    bg-blue-600 
-    text-white 
-    font-semibold 
-    py-2 
-    rounded-xl 
-    shadow-md 
-    transition 
-    duration-200 
-    ease-in-out
-    hover:bg-blue-700
-    hover:shadow-lg
-    active:bg-blue-800
-    active:scale-95
-  "
+                                w-full 
+                                bg-blue-600 
+                                text-white 
+                                font-semibold 
+                                py-2 
+                                rounded-xl 
+                                shadow-md 
+                                transition 
+                                duration-200 
+                                ease-in-out
+                                hover:bg-blue-700
+                                hover:shadow-lg
+                                active:bg-blue-800
+                                active:scale-95
+                            "
                         >
                             Sign In
                         </Button>
-
                     </div>
-
                 </form>
             </div>
         </div>

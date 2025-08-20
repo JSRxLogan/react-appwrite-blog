@@ -41,7 +41,6 @@ function AllPosts() {
     return <p className="text-red-600 mt-8 text-center">{error}</p>
   }
 
-  console.log(posts)
 
   return (
     <div className="w-full py-8">
