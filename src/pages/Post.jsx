@@ -57,7 +57,7 @@ export default function Post() {
         )
     }
 
-    const isAuthor = post.userid === userInfo.userData.$id
+    const isAuthor = post.userid === userInfo?.$id
 
 
     return (

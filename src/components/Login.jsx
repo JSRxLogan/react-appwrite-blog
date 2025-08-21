@@ -21,7 +21,8 @@ function Login() {
             try {
                 const userData = await authService.getCurrentUser()
                 if (userData) {
-                    await dispatch(authLogin({userData})) // ensure store is updated
+                    const userInfo = {userData}
+                    await dispatch(authLogin(userInfo)) // ensure store is updated
                     navigate("/") // redirect only after store has user
                 }
             } catch (err) {

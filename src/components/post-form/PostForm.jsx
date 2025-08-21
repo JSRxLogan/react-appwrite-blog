@@ -34,8 +34,9 @@ export default function PostForm({ post }) {
       });
 
       if (dbPost) {
-       dispatch(authLogin(userInfo)) // ensure store is updated
-        navigate(`/post/${dbPost.$id}`);
+        const flattaned= {...userInfo?.userData}
+       dispatch(authLogin(flattaned)) // ensure store is updated
+        // navigate(`/post/${dbPost.$id}`);
       }
     } else {
       const file = await appwriteService.uploadFile(data.image[0]);
@@ -43,7 +44,7 @@ export default function PostForm({ post }) {
       if (file) {
         const fileId = file.$id;
         data.featuredImage = fileId;
-        const dbPost = await appwriteService.createPost({ ...data, userId: userInfo.userData.$id });
+        const dbPost = await appwriteService.createPost({ ...data, userId:  userInfo.$id });
 
         if (dbPost) {
           navigate(`/post/${dbPost.$id}`);
