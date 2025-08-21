@@ -12,6 +12,7 @@ export default function Post() {
     const navigate = useNavigate();
 
     const userInfo = useSelector((state) => state.auth.userInfo);
+    console.log("User Info:", userInfo);
 
     useEffect(() => {
         if (!slug) return navigate("/");
@@ -21,6 +22,7 @@ export default function Post() {
 
             try {
                 const postData = await appwriteService.getPost(slug);
+                console.log("Fetched Post Data:", postData);
                 if (postData) setPost(postData);
                 else navigate("/");
             } finally {
@@ -57,7 +59,7 @@ export default function Post() {
         )
     }
 
-    const isAuthor = post.userid === userInfo.$id
+    const isAuthor = post.userid === userInfo.userData.$id
 
 
     return (

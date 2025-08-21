@@ -34,8 +34,7 @@ export default function PostForm({ post }) {
       });
 
       if (dbPost) {
-        const userData=userInfo
-        await dispatch(authLogin(userData)) // ensure store is updated
+       dispatch(authLogin(userInfo)) // ensure store is updated
         navigate(`/post/${dbPost.$id}`);
       }
     } else {
