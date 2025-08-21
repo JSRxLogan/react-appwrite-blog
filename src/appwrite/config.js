@@ -86,8 +86,6 @@ class Services{
                 confi.appwriteCollectionId,
                 uniqueID
             )
-
-            console.log("Post deleted successfully")
             return true;
             
         } catch (error) {
@@ -181,8 +179,6 @@ class Services{
                 confi.appwriteBucketId,
                 fileId
             )
-
-            console.log("File deleted successfully")
             return true;
             
         } catch (error) {

@@ -61,7 +61,6 @@ class Authservices{
    async getCurrentUser()
    {
     try {
-        console.log("Getting current user")
         return this.Account.get()
     } catch (error) {
         console.log("Error in getting current user :: ",error)
