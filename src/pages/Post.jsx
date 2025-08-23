@@ -56,8 +56,7 @@ export default function Post() {
             </div>
         )
     }
-
-    console.log(" userInfo:", userInfo);    
+    
     const isAuthor = post.userid === userInfo?.$id
 
 

@@ -20,10 +20,8 @@ export default function PostForm({ post }) {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const dispatch = useDispatch();
 
-  console.log("post in PostForm:", post);
   const submit = async (data) => {
     if (post) {
-      console.log("update")
       const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
 
       if (file) {
@@ -35,9 +33,6 @@ export default function PostForm({ post }) {
         featuredImage: file ? file.$id : undefined,
       });
 
-      console.log("userInfo before dispatch:", userInfo);
-      console.log("dbPost after update:", dbPost);
-
       if (dbPost) {
        dispatch(authLogin(userInfo)) // ensure store is updated
         navigate(`/post/${dbPost.$id}`);
@@ -46,8 +41,6 @@ export default function PostForm({ post }) {
       const file = await appwriteService.uploadFile(data.image[0]);
 
       if (file) {
-        console.log("create")
-         console.log("userInfo before dispatch:", userInfo);
         const fileId = file.$id;
         data.featuredImage = fileId;
         const dbPost = await appwriteService.createPost({ ...data, userId:  userInfo.$id });

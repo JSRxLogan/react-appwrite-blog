@@ -10,7 +10,6 @@ function EditPost() {
     const {slug} = useParams()
     const [post , setPost] = useState(null)
 
-    console.log("Slug from params:", slug);
     useEffect(() => {
         if(slug)
         {
@@ -26,7 +25,6 @@ function EditPost() {
         }
     },[slug,navigate])
 
-    console.log("Post to edit:", post);
     return post ? (
         <div className='py-8'>
             <Container>
